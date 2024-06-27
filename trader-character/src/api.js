@@ -42,10 +42,32 @@ async function createBombAnimations(standFrames, explFrames, w, h, standImage, e
     return { standAnim, expldAnim }
 }
 
-async function createBomb(x, y, standSpeed, explSpeed, onClick) {
 
-    await Assets.load(['../src/assets/red.png', '../src/assets/expl-red.png'])
-    const bomb = await createBombAnimations(3, 11, 50, 50, '../src/assets/red.png', '../src/assets/expl-red.png')
+async function createBomb(type, x, y, standSpeed, explSpeed, onClick) {
+    let bomb
+
+    switch (type) {
+        case 'ice': {
+            await Assets.load(['../src/assets/ice.png', '../src/assets/expl-ice.png'])
+            bomb = await createBombAnimations(1, 20, 50, 50, '../src/assets/ice.png', '../src/assets/expl-ice.png')
+            break
+        }
+        case 'green': {
+            await Assets.load(['../src/assets/green.png', '../src/assets/expl-green.png'])
+            bomb = await createBombAnimations(2, 18, 50, 50, '../src/assets/green.png', '../src/assets/expl-green.png')
+            break
+        }
+        case 'sound': {
+            await Assets.load(['../src/assets/sound.png', '../src/assets/expl-sound.png'])
+            bomb = await createBombAnimations(4, 11, 50, 50, '../src/assets/sound.png', '../src/assets/expl-sound.png')
+            break
+        }
+        default: {
+            await Assets.load(['../src/assets/red.png', '../src/assets/expl-red.png'])
+            bomb = await createBombAnimations(3, 11, 50, 50, '../src/assets/red.png', '../src/assets/expl-red.png')
+            break
+        }
+    }
 
     bomb.standAnim.x = bomb.expldAnim.x = x
     bomb.standAnim.y = bomb.expldAnim.y = y
@@ -54,13 +76,12 @@ async function createBomb(x, y, standSpeed, explSpeed, onClick) {
     bomb.standAnim.animationSpeed = standSpeed
 
     bomb.standAnim.interactive = true;
-    bomb.standAnim.on('click', () => { 
-        bomb.standAnim.destroy()
+    bomb.standAnim.on('click', () => {
         onClick()
     })
 
     bomb.expldAnim.loop = false
-    bomb.expldAnim.onComplete = () => { 
+    bomb.expldAnim.onComplete = () => {
         bomb.expldAnim.destroy()
     }
 
